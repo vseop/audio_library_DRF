@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from rest_framework import viewsets, parsers
 
-# Create your views here.
+class UserView(viewsets.ModelViewSet):
+    """Просмотр и редактирование данных пользователя"""
+
+    parser_classes = (parsers.MultiPartParser, )

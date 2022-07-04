@@ -14,7 +14,7 @@ def check_google_auth(google_user: serializer.GoogleAuth) -> dict:
             google_user['token'], requests.Request(), settings.GOOGLE_CLIENT_ID
         )
     except ValueError:
-        raise AuthenticationFailed(code=405, detail='Bad token Google')
+        raise AuthenticationFailed(code=403, detail='Bad token Google')
 
     user, _ = AuthUser.objects.get_or_create(email=google_user['email'])
     return base_auth.create_token(user.id)

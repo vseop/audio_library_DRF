@@ -41,7 +41,7 @@ class Follower(models.Model):
 
 class SocialLink(models.Model):
     """
-    Модель ссылое на социальные сети пользователя
+    Модель ссылок на социальные сети пользователя
     """
 
     user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, related_name='social_links')

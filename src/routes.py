@@ -8,7 +8,7 @@ schema_view = get_schema_view(
         title="Audio library",
         default_version='v1',
         description="Аудио библиотека на Django Rest Framework",
-        contact=openapi.Contact(url="https://www.youtube.com/c/DjangoSchool"),
+        contact=openapi.Contact(email='ivpython@mail.ru'),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
