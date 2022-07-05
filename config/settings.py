@@ -118,6 +118,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 GOOGLE_CLIENT_ID = '298419164282-c7r630at2upu4f26qi4cg34ipa8hs69o.apps.googleusercontent.com'
 
+# SPOTIFY_CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
+# SPOTIFY_SECRET_KEY = os.environ.get('SPOTIFY_SECRET_KEY')
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('src.oauth.services.auth_backend.AuthBackend',),
     'DEFAULT_PERMISSION_CLASSES': [
