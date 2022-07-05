@@ -23,19 +23,21 @@ class AuthBackend(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(
                 'Invalid token header. Token string should not contain spaces'
             )
+
         try:
             token = auth_header[1].decode('utf-8')
         except UnicodeError:
             raise exceptions.AuthenticationFailed(
                 'Invalid token header. Token string should not contain invalid characters.'
             )
+
         return self.authenticate_credential(token)
 
     def authenticate_credential(self, token) -> tuple:
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
         except jwt.PyJWTError:
-            raise exceptions.AuthenticationFailed('Invalid authentication. Could not decode token')
+            raise exceptions.AuthenticationFailed('Invalid authentication. Could not decode token.')
 
         token_exp = datetime.fromtimestamp(payload['exp'])
         if token_exp < datetime.utcnow():
@@ -46,4 +48,4 @@ class AuthBackend(authentication.BaseAuthentication):
         except AuthUser.DoesNotExist:
             raise exceptions.AuthenticationFailed('No user matching this token was found.')
 
-        return user, None  # request.user , request.auth
+        return user, None

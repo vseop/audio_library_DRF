@@ -11,6 +11,7 @@ class AuthUser(models.Model):
     email = models.EmailField(max_length=150, unique=True)
     join_date = models.DateTimeField(auto_now_add=True)
     country = models.CharField(max_length=30, blank=True, null=True)
+    city = models.CharField(max_length=30, blank=True, null=True)
     bio = models.TextField(max_length=2000, blank=True, null=True)
     display_name = models.CharField(max_length=30, blank=True, null=True)
     avatar = models.ImageField(

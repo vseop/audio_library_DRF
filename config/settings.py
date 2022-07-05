@@ -106,6 +106,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -118,8 +119,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 GOOGLE_CLIENT_ID = '298419164282-c7r630at2upu4f26qi4cg34ipa8hs69o.apps.googleusercontent.com'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':('src.oauth.auth_backend.AuthBackend', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('src.oauth.services.auth_backend.AuthBackend',),
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permission.AllowAny'
+        'rest_framework.permissions.AllowAny'
     ]
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
