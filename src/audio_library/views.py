@@ -1,6 +1,5 @@
 import os
 
-
 from rest_framework import generics, viewsets, parsers, views
 
 from . import models, serializer
@@ -29,6 +28,7 @@ class LicenseView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class AlbumView(viewsets.ModelViewSet):
     """ CRUD альбомов автора
     """
@@ -55,6 +55,7 @@ class PublicAlbumView(generics.ListAPIView):
     def get_queryset(self):
         return models.Album.objects.filter(user__id=self.kwargs.get('pk'), private=False)
 
+
 class TrackView(MixedSerializer, viewsets.ModelViewSet):
     """ CRUD треков
     """
@@ -77,3 +78,22 @@ class TrackView(MixedSerializer, viewsets.ModelViewSet):
         instance.delete()
 
 
+class PlayListView(MixedSerializer, viewsets.ModelViewSet):
+    """ CRUD плейлистов пользователя
+    """
+    parser_classes = (parsers.MultiPartParser,)
+    permission_classes = [IsAuthor]
+    serializer_class = serializer.CreatePlayListSerializer
+    serializer_classes_by_action = {
+        'list': serializer.PlayListSerializer
+    }
+
+    def get_queryset(self):
+        return models.PlayList.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_destroy(self, instance):
+        delete_old_file(instance.cover.path)
+        instance.delete()
