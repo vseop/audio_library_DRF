@@ -127,6 +127,28 @@ class AuthorTrackListView(generics.ListAPIView):
         )
 
 
+class CommentAuthorView(viewsets.ModelViewSet):
+    """ CRUD комментариев автора
+    """
+    serializer_class = serializer.CommentAuthorSerializer
+    permission_classes = [IsAuthor]
+
+    def get_queryset(self):
+        return models.Comment.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CommentView(viewsets.ModelViewSet):
+    """ Комментарии к треку
+    """
+    serializer_class = serializer.CommentSerializer
+
+    def get_queryset(self):
+        return models.Comment.objects.filter(track_id=self.kwargs.get('pk'))
+
+
 class StreamingFileView(views.APIView):
     """ Воспроизведение трека
     """
