@@ -1,5 +1,7 @@
 import os
 
+from django.http import FileResponse, Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets, parsers, views
 
 from . import models, serializer
@@ -105,7 +107,8 @@ class TrackListView(generics.ListAPIView):
     queryset = models.Track.objects.filter(album__private=False, private=False)
     serializer_class = serializer.AuthorTrackSerializer
     pagination_class = Pagination
-
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['title', 'user__display_name', 'album__name', 'genre__name']
 
 
 class AuthorTrackListView(generics.ListAPIView):
@@ -113,10 +116,31 @@ class AuthorTrackListView(generics.ListAPIView):
     """
     serializer_class = serializer.AuthorTrackSerializer
     pagination_class = Pagination
-
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['title', 'album__name', 'genre__name']
 
     def get_queryset(self):
         return models.Track.objects.filter(
             user__id=self.kwargs.get('pk'), album__private=False, private=False
         )
 
+
+class StreamingFileView(views.APIView):
+    """ Воспроизведение трека
+    """
+
+    def set_play(self):
+        self.track.plays_count += 1
+        self.track.save()
+
+    def get(self, request, pk):
+        # track = get_object_or_404(models.Track, id=pk, private=False)
+        self.track = get_object_or_404(models.Track, id=pk, private=False)
+        if os.path.exists(self.track.file.path):
+            self.set_play()
+            # return FileResponse(open(track.file.path, 'rb'), filename=track.file.name)
+            response = HttpResponse('', content_type="audio/mpeg", status=206)
+            response['X-Accel-Redirect'] = f"/mp3/{self.track.file.name}"
+            return response
+        else:
+            return Http404
