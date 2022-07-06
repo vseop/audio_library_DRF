@@ -116,6 +116,7 @@ class AuthorTrackListView(generics.ListAPIView):
     """
     serializer_class = serializer.AuthorTrackSerializer
     pagination_class = Pagination
+
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['title', 'album__name', 'genre__name']
 
@@ -141,6 +142,28 @@ class StreamingFileView(views.APIView):
             # return FileResponse(open(track.file.path, 'rb'), filename=track.file.name)
             response = HttpResponse('', content_type="audio/mpeg", status=206)
             response['X-Accel-Redirect'] = f"/mp3/{self.track.file.name}"
+            return response
+        else:
+            return Http404
+
+
+class DownloadTrackView(views.APIView):
+    """ Скачивание трека
+    """
+
+    def set_download(self):
+        self.track.download += 1
+        self.track.save()
+
+    def get(self, request, pk):
+        self.track = get_object_or_404(models.Track, id=pk, private=False)
+        if os.path.exists(self.track.file.path):
+            self.set_download()
+            # return FileResponse(
+            #     open(self.track.file.path, 'rb'), filename=self.track.file.name, as_attachment=True)
+            response = HttpResponse('', content_type="audio/mpeg", status=206)
+            response["Content-Disposition"] = f"attachment; filename={self.track.file.name}"
+            response['X-Accel-Redirect'] = f"/media/{self.track.file.name}"
             return response
         else:
             return Http404
