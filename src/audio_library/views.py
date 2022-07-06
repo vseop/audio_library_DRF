@@ -2,6 +2,7 @@ import os
 
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, parsers, views
 
 from . import models, serializer
@@ -107,8 +108,8 @@ class TrackListView(generics.ListAPIView):
     queryset = models.Track.objects.filter(album__private=False, private=False)
     serializer_class = serializer.AuthorTrackSerializer
     pagination_class = Pagination
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_fields = ['title', 'user__display_name', 'album__name', 'genre__name']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'user__display_name', 'album__name', 'genre__name']
 
 
 class AuthorTrackListView(generics.ListAPIView):
@@ -117,8 +118,8 @@ class AuthorTrackListView(generics.ListAPIView):
     serializer_class = serializer.AuthorTrackSerializer
     pagination_class = Pagination
 
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_fields = ['title', 'album__name', 'genre__name']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'album__name', 'genre__name']
 
     def get_queryset(self):
         return models.Track.objects.filter(

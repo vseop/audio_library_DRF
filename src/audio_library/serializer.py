@@ -31,9 +31,9 @@ class AlbumSerializer(BaseSerializer):
 
 
 class CreateAuthorTrackSerializer(BaseSerializer):
-    plays_count = serializers.IntegerField(read_only=True)
-    download = serializers.IntegerField(read_only=True)
-    user = serializers.IntegerField(read_only=True)
+    # plays_count = serializers.IntegerField(read_only=True)
+    # download = serializers.IntegerField(read_only=True)
+    # user = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = models.Track
@@ -52,6 +52,7 @@ class CreateAuthorTrackSerializer(BaseSerializer):
             'cover',
             'user'
         )
+        read_only_fields = ['user', 'download', 'plays_count']
 
     def update(self, instance, validated_data):
         delete_old_file(instance.file.path)
