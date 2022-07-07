@@ -1,7 +1,7 @@
 .idea
 idea
 .DS_Store
-.env.dev
+
 
 *.egg-info/
 .installed.cfg

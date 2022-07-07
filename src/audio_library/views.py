@@ -190,3 +190,17 @@ class DownloadTrackView(views.APIView):
             return response
         else:
             return Http404
+
+class StreamingFileAuthorView(views.APIView):
+    """ Воспроизведение трека автора
+    """
+    permission_classes = [IsAuthor]
+
+    def get(self, request, pk):
+        self.track = get_object_or_404(models.Track, id=pk, user=request.user)
+        if os.path.exists(self.track.file.path):
+            response = HttpResponse('', content_type="audio/mpeg", status=206)
+            response['X-Accel-Redirect'] = f"/mp3/{self.track.file.name}"
+            return response
+        else:
+            return Http404
